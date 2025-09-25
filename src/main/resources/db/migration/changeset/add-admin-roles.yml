@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-admin-roles
+      author: cooled_monkey
+      changes:
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: roles_id
+                  value: 1
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: roles_id
+                  value: 2
+
+      rollback:
+        - delete:
+            tableName: users
+            where: user_id IN (1)
+
+

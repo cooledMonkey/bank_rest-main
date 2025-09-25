@@ -1,0 +1,119 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: cooled_monkey
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: full_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone_number
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(512)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+        - createTable:
+            tableName: cards
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: card_number
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    references: users(id)
+                    foreignKeyName: fk_cards_users_user_id
+              - column:
+                  name: validity_period
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                    check: "IN('active', 'locked', 'expired')"
+              - column:
+                  name: status
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: balance
+                  type: float(53)
+                  defaultValue: 0
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: roles_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    references: roles(id)
+                    foreignKeyName: fk_users_roles_roles_role_id
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    references: users(id)
+                    foreignKeyName: fk_users_roles_users_user_id
+            constraints:
+              primaryKey: role, user
+  - include:
+      file: db/migration/changeset/create-roles.yml
+  - include:
+      file: db/migration/changeset/create-admin.yml
+  - include:
+      file: db/migration/changeset/add-admin-roles.yml
+

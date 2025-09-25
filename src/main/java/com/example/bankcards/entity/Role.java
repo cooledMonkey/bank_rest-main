@@ -2,6 +2,7 @@ package com.example.bankcards.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -11,6 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "roles")
+@NoArgsConstructor
 public class Role implements GrantedAuthority {
     @Id
     private Long id;
@@ -22,5 +24,10 @@ public class Role implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return getName();
+    }
+
+    public Role(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 }

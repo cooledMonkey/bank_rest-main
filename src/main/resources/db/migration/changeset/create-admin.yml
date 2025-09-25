@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-admin
+      author: cooled_monkey
+      comment: "Create admin user"
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: full_name
+                  value: "Титовцев Антон Сергеевич"
+              - column:
+                  name: phone_number
+                  value: "89879692771"
+              - column:
+                  name: password
+                  value: "$2a$10$vVZOsG5Isy0sHYj888qIzum5HU84ohSaFEVYhNQzvSDU2kWybADbe"
+              - column:
+                  name: email
+                  value: "admin@server.com"
+
+      rollback:
+        - delete:
+            tableName: users
+            where: phone_number in ('89879692771')
+
+
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: roles_id
+                  value: 1
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: roles_id
+                  value: 2

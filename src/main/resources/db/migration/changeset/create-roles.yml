@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-roles
+      author: cooled_monkey
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: "ROLE_ADMIN"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: "ROLE_USER"
+      rollback:
+        - delete:
+            tableName: roles
+            where: name in ('ROLE_ADMIN', 'ROLE_USER')
