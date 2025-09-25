@@ -18,8 +18,6 @@ public class UserController {
 
     @PostMapping("/login")
     public JwtAuthenticationResponse signIn(@RequestBody @Valid LoginRequest request) {
-        JwtAuthenticationResponse response = authenticationService.signIn(request);
-        System.out.println(response);
-        return response;
+        return authenticationService.signIn(request);
     }
 }
