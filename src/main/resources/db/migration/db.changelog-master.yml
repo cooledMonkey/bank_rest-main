@@ -79,12 +79,13 @@ databaseChangeLog:
                   type: TIMESTAMP
                   constraints:
                     nullable: false
-                    check: "IN('active', 'locked', 'expired')"
               - column:
                   name: status
                   type: varchar(50)
+                  defaultValue: "active"
                   constraints:
                     nullable: false
+                    check: "IN('active', 'locked', 'expired')"
               - column:
                   name: balance
                   type: float(53)
