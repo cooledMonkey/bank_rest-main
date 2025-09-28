@@ -1,5 +1,6 @@
 package com.example.bankcards.service;
 
+import com.example.bankcards.dto.CheckCardBalanceResponse;
 import com.example.bankcards.dto.CreateCardRequest;
 import com.example.bankcards.dto.CreateCardResponse;
 import com.example.bankcards.dto.GetCardsResponse;
@@ -7,6 +8,7 @@ import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.exception.AccessDeniedToCardException;
 import com.example.bankcards.exception.CardNotFoundException;
+import com.example.bankcards.exception.OperationUnavailableException;
 import com.example.bankcards.exception.UserNotFoundException;
 import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.repository.UserRepository;
@@ -56,26 +58,25 @@ public class CardService {
         return createCardResponse;
     }
 
-    public GetCardsResponse findById(Long id) {
-        Optional<Card> optionalCard = cardRepository.findById(id);
-        if (optionalCard.isEmpty()) {
-            throw new CardNotFoundException();
-        }
-        return new GetCardsResponse(optionalCard.get());
+    public GetCardsResponse getCardById(Long id) {
+        return new GetCardsResponse(findById(id));
     }
 
     public void moneyTransfer(Long userId, Long senderCardId, Long receiverCardId, Double amountOfMoney) {
-        Optional<Card> optionalSenderCard = cardRepository.findById(senderCardId);
-        Optional<Card> optionalReceiverCard = cardRepository.findById(receiverCardId);
-        if (optionalReceiverCard.isEmpty() || optionalSenderCard.isEmpty()) {
-            throw new CardNotFoundException();
-        }
-        if (!Objects.equals(userId, optionalSenderCard.get().getOwner().getId()) ||
-                !Objects.equals(userId, optionalReceiverCard.get().getOwner().getId())) {
+        Card senderCard = findById(senderCardId);
+        Card receiverCard = findById(receiverCardId);
+        if (!Objects.equals(userId, senderCard.getOwner().getId()) ||
+                !Objects.equals(userId, receiverCard.getOwner().getId())) {
             throw new AccessDeniedToCardException();
         }
-        cardRepository.updateBalance(senderCardId, -amountOfMoney);
-        cardRepository.updateBalance(receiverCardId, amountOfMoney);
+        if(!senderCard.getStatus().equals("active")||
+                !receiverCard.getStatus().equals("active")){
+            throw new OperationUnavailableException();
+        }
+        senderCard.setBalance(senderCard.getBalance() - amountOfMoney);
+        receiverCard.setBalance(receiverCard.getBalance() + amountOfMoney);
+        cardRepository.save(senderCard);
+        cardRepository.save(receiverCard);
     }
 
     @SuppressWarnings("removal")
@@ -85,8 +86,35 @@ public class CardService {
         return new PageImpl<>(cards.stream().map(GetCardsResponse::new).toList());
     }
 
+    public Page<GetCardsResponse> getAllCards(Integer page, Integer limit){
+        Page<Card> cards = cardRepository.findAll(PageRequest.of(page, limit));
+        return new PageImpl<>(cards.stream().map(GetCardsResponse::new).toList());
+    }
+
     public void delete(Long id) {
         cardRepository.deleteById(id);
+    }
+
+    public void requestCardBlock(Long id){
+        Card card = findById(id);
+        if(card.getStatus().equals("expired")){
+            throw new OperationUnavailableException();
+        }
+        card.setStatus("locked");
+        cardRepository.save(card);
+    }
+
+    public CheckCardBalanceResponse getCardBalance(Long id){
+        Card card = findById(id);
+        return new CheckCardBalanceResponse(card.getBalance());
+    }
+
+    public Card findById(Long id){
+        Optional<Card> optionalCard = cardRepository.findById(id);
+        if(optionalCard.isEmpty()){
+            throw new CardNotFoundException();
+        }
+        return optionalCard.get();
     }
 
     private String generateCardNumber() {
