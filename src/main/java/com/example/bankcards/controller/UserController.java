@@ -22,22 +22,22 @@ public class UserController {
     @Autowired
     private final UserService userService;
 
-    @PostMapping("/login")
+    @PostMapping("/users/login")
     public JwtAuthenticationResponse signIn(@RequestBody @Valid LoginRequest request) {
         return authenticationService.signIn(request);
     }
 
-    @GetMapping("")
+    @GetMapping("/admin/users")
     public ResponseEntity<List<GetUserResponse>> getAllUsers(){
         return ResponseEntity.ok(userService.allUsers());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/admin/users/{id}")
     public ResponseEntity<GetUserResponse> getUserById(@PathVariable Long id){
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
-    @PostMapping("/create-user")
+    @PostMapping("/admin/users/create-user")
     public ResponseEntity<GetUserResponse> createUser(@RequestBody CreateUserRequest createUserRequest){
         return ResponseEntity.ok(authenticationService.signUp(createUserRequest));
     }

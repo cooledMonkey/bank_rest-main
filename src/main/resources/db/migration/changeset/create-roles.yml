@@ -8,13 +8,13 @@ databaseChangeLog:
             columns:
               - column:
                   name: name
-                  value: "ROLE_ADMIN"
+                  value: "ADMIN"
         - insert:
             tableName: roles
             columns:
               - column:
                   name: name
-                  value: "ROLE_USER"
+                  value: "USER"
       rollback:
         - delete:
             tableName: roles

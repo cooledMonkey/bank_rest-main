@@ -43,10 +43,12 @@ public class SecurityConfiguration {
                 }))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/error").permitAll()
-                        .requestMatchers("/login/**").permitAll()
-                        .requestMatchers("v3/api-docs/**").permitAll()
-                        .requestMatchers("swagger-ui/**").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/users/login/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
 
                 .authenticationProvider(authenticationProvider())

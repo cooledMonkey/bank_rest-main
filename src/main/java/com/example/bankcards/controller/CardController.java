@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/card")
+@RequestMapping("")
 @RequiredArgsConstructor
 public class CardController {
     @Autowired
@@ -18,23 +18,23 @@ public class CardController {
     @Autowired
     private final UserService userService;
 
-    @PostMapping("/send-money")
+    @PostMapping("/card/send-money")
     public void sendMoney(@RequestBody SendMoneyRequest sendMoneyRequest) {
         cardService.moneyTransfer(userService.getCurrentUser().getId(), sendMoneyRequest.getSenderCardId(),
                 sendMoneyRequest.getReceiverCardId(), sendMoneyRequest.getAmountOfMoney());
     }
 
-    @PostMapping("/create-card")
+    @PostMapping("/admin/card/create-card")
     public ResponseEntity<CreateCardResponse> createNewCard(@RequestBody CreateCardRequest createCardRequest) {
         return ResponseEntity.ok(cardService.save(createCardRequest));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/card/{id}")
     public ResponseEntity<GetCardsResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(cardService.getCardById(id));
     }
 
-    @GetMapping("/get-cards-by-owner")
+    @GetMapping("/card/get-cards-by-owner")
     public ResponseEntity<Page<GetCardsResponse>> findCardsByOwner(
             @RequestParam(value = "userId") Long userId,
             @RequestParam(value = "page") Integer page,
@@ -43,7 +43,7 @@ public class CardController {
         return ResponseEntity.ok(cardService.getCardsByOwner(userId, page, limit, status));
     }
 
-    @GetMapping("/get-all-cards")
+    @GetMapping("/admin/card/get-all-cards")
     public ResponseEntity<Page<GetCardsResponse>> findAllCards(
             @RequestParam(value = "page") Integer page,
             @RequestParam(value = "limit") Integer limit,
@@ -51,17 +51,17 @@ public class CardController {
         return ResponseEntity.ok(cardService.getAllCards(page, limit, status));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/card/{id}")
     public void deleteCardById(@PathVariable Long id) {
         cardService.delete(id);
     }
 
-    @PatchMapping("/block-card/{id}")
+    @PatchMapping("/card/block-card/{id}")
     public void blockCard(@PathVariable Long id){
         cardService.requestCardBlock(id);
     }
 
-    @GetMapping("/get-card-balance/{id}")
+    @GetMapping("/card/get-card-balance/{id}")
     public ResponseEntity<CheckCardBalanceResponse> checkCardBalance(@PathVariable Long id){
         return ResponseEntity.ok(cardService.getCardBalance(id));
     }
