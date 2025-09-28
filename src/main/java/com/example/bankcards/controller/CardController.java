@@ -34,19 +34,21 @@ public class CardController {
         return ResponseEntity.ok(cardService.getCardById(id));
     }
 
-    @GetMapping("/get-card-by-owner")
+    @GetMapping("/get-cards-by-owner")
     public ResponseEntity<Page<GetCardsResponse>> findCardsByOwner(
-            @RequestParam(value = "userId", required = false) Long userId,
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "limit", required = false) Integer limit) {
-        return ResponseEntity.ok(cardService.getCardsByOwner(userId, page, limit));
+            @RequestParam(value = "userId") Long userId,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "limit") Integer limit,
+            @RequestParam(value = "status", required = false) String status) {
+        return ResponseEntity.ok(cardService.getCardsByOwner(userId, page, limit, status));
     }
 
     @GetMapping("/get-all-cards")
     public ResponseEntity<Page<GetCardsResponse>> findAllCards(
-            @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "limit", required = false) Integer limit) {
-        return ResponseEntity.ok(cardService.getAllCards(page, limit));
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "limit") Integer limit,
+            @RequestParam(value = "status", required = false) String status) {
+        return ResponseEntity.ok(cardService.getAllCards(page, limit, status));
     }
 
     @DeleteMapping("/{id}")

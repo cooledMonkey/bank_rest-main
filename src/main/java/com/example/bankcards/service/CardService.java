@@ -80,13 +80,25 @@ public class CardService {
     }
 
     @SuppressWarnings("removal")
-    public Page<GetCardsResponse> getCardsByOwner(Long id, Integer page, Integer limit) {
-        Specification<Card> cardSpecification = Specification.where(CardSpecification.hasUserId(id));
-        Page<Card> cards = cardRepository.findAll(cardSpecification, PageRequest.of(page, limit));
+    public Page<GetCardsResponse> getCardsByOwner(Long id, Integer page, Integer limit, String status) {
+        Specification<Card> cardSpecificationByUserId = Specification.where(CardSpecification.hasUserId(id));
+        Specification<Card> cardSpecificationByStatusAndUserId =
+                Specification.where(CardSpecification.hasStatus(status)).and(cardSpecificationByUserId);
+        if(status != null){
+            Page<Card> cards = cardRepository.findAll(cardSpecificationByStatusAndUserId, PageRequest.of(page, limit));
+            return new PageImpl<>(cards.stream().map(GetCardsResponse::new).toList());
+        }
+        Page<Card> cards = cardRepository.findAll(cardSpecificationByUserId, PageRequest.of(page, limit));
         return new PageImpl<>(cards.stream().map(GetCardsResponse::new).toList());
     }
 
-    public Page<GetCardsResponse> getAllCards(Integer page, Integer limit){
+    @SuppressWarnings("removal")
+    public Page<GetCardsResponse> getAllCards(Integer page, Integer limit, String status){
+        Specification<Card> cardSpecificationByStatus = Specification.where(CardSpecification.hasStatus(status));
+        if(status != null){
+            Page<Card> cards = cardRepository.findAll(cardSpecificationByStatus, PageRequest.of(page, limit));
+            return new PageImpl<>(cards.stream().map(GetCardsResponse::new).toList());
+        }
         Page<Card> cards = cardRepository.findAll(PageRequest.of(page, limit));
         return new PageImpl<>(cards.stream().map(GetCardsResponse::new).toList());
     }
