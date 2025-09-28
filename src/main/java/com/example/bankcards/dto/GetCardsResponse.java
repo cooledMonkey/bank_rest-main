@@ -21,7 +21,8 @@ public class GetCardsResponse {
         this.setValidityPeriod(card.getValidityPeriod());
         this.setId(card.getId());
         this.setBalance(card.getBalance());
-        this.setCardNumber(card.getCardNumber());
+        String cardNumber = "**** **** **** " + card.getCardNumber().split(" ")[3];
+        this.setCardNumber(cardNumber);
         this.setStatus(card.getStatus());
     }
 }
