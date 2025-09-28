@@ -31,4 +31,9 @@ public class GlobalExceptionHandler {
         ExceptionResponse response = new ExceptionResponse("Доступ к карте невожможен");
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleException(RoleNotFoundException e) {
+        ExceptionResponse response = new ExceptionResponse("Роль не найдена");
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 }

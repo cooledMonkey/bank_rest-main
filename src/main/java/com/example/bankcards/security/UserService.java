@@ -1,6 +1,12 @@
 package com.example.bankcards.security;
 
+import com.example.bankcards.dto.CreateUserRequest;
+import com.example.bankcards.dto.GetUserResponse;
+import com.example.bankcards.entity.Role;
 import com.example.bankcards.entity.User;
+import com.example.bankcards.exception.RoleNotFoundException;
+import com.example.bankcards.exception.UserNotFoundException;
+import com.example.bankcards.repository.RoleRepository;
 import com.example.bankcards.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,37 +18,49 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
     @Autowired
     private final UserRepository userRepository;
+    @Autowired
+    private final RoleRepository roleRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByPhoneNumber(username).get();
-        if (user == null) {
+        Optional<User> optionalUser = userRepository.findByPhoneNumber(username);
+        if (optionalUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
-        return user;
+        return optionalUser.get();
     }
 
-    public User findUserById(Long userId) {
-        Optional<User> userFromDb = userRepository.findById(userId);
-        return userFromDb.orElse(new User());
+    public GetUserResponse save(CreateUserRequest createUserRequest) {
+        User user = new User();
+        user.setFullName(createUserRequest.getFullName());
+        user.setEmail(createUserRequest.getEmail());
+        user.setPhoneNumber(createUserRequest.getPhoneNumber());
+        user.setPassword(createUserRequest.getPassword());
+        Set<Role> roles = createUserRequest.getRoleIds().stream().map(x -> roleRepository.findById(x)
+                        .orElseThrow(RoleNotFoundException::new))
+                .collect(Collectors.toSet());
+        user.setRoles(roles);
+        return new GetUserResponse(userRepository.save(user));
     }
 
-    public List<User> allUsers() {
-        return userRepository.findAll();
-    }
-
-    public boolean deleteUser(Long userId) {
-        if (userRepository.findById(userId).isPresent()) {
-            userRepository.deleteById(userId);
-            return true;
+    public GetUserResponse findUserById(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException();
         }
-        return false;
+        return new GetUserResponse(optionalUser.get());
+    }
+
+    public List<GetUserResponse> allUsers() {
+        return userRepository.findAll().stream().map(GetUserResponse::new).toList();
     }
 
     public User getByPhoneNumber(String phoneNumber) {
