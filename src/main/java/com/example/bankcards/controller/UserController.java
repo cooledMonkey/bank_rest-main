@@ -39,6 +39,6 @@ public class UserController {
 
     @PostMapping("/create-user")
     public ResponseEntity<GetUserResponse> createUser(@RequestBody CreateUserRequest createUserRequest){
-        return ResponseEntity.ok(userService.save(createUserRequest));
+        return ResponseEntity.ok(authenticationService.signUp(createUserRequest));
     }
 }
