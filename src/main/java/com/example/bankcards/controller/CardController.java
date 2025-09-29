@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,7 +31,7 @@ public class CardController {
     @ApiResponse(responseCode = "200", description = "")
     @ApiResponse(responseCode = "404", description = "Карта не найдена", content = {@Content()})
     @PostMapping("/card/send-money")
-    public void sendMoney(@RequestBody SendMoneyRequest sendMoneyRequest) {
+    public void sendMoney(@RequestBody @Valid SendMoneyRequest sendMoneyRequest) {
         cardService.moneyTransfer(userService.getCurrentUser().getId(), sendMoneyRequest.getSenderCardId(),
                 sendMoneyRequest.getReceiverCardId(), sendMoneyRequest.getAmountOfMoney());
     }
@@ -40,7 +41,7 @@ public class CardController {
     @ApiResponse(responseCode = "200", description = "Созданная карта", content = {@Content(mediaType = "application/json",
             schema = @Schema(implementation = CreateCardResponse.class))})
     @PostMapping("/admin/card/create-card")
-    public ResponseEntity<CreateCardResponse> createNewCard(@RequestBody CreateCardRequest createCardRequest) {
+    public ResponseEntity<CreateCardResponse> createNewCard(@RequestBody @Valid CreateCardRequest createCardRequest) {
         return ResponseEntity.ok(cardService.save(createCardRequest));
     }
 

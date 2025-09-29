@@ -1,6 +1,7 @@
 package com.example.bankcards.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,5 +15,6 @@ public class SendMoneyRequest {
     @Schema(example = "2")
     Long receiverCardId;
     @Schema(example = "100")
+    @Min(value = 0, message = "Сумма перевода не должна быть отрицательной")
     Double amountOfMoney;
 }

@@ -63,7 +63,7 @@ public class UserController {
             content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = GetUserResponse.class))})
     @PostMapping("/admin/users/create-user")
-    public ResponseEntity<GetUserResponse> createUser(@RequestBody CreateUserRequest createUserRequest){
+    public ResponseEntity<GetUserResponse> createUser(@RequestBody @Valid CreateUserRequest createUserRequest){
         return ResponseEntity.ok(authenticationService.signUp(createUserRequest));
     }
 }

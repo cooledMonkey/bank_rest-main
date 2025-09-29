@@ -135,6 +135,6 @@ public class CardService {
         for (int i = 0; i < 4; i++) {
             cardNumber.append(random.nextInt(999, 10000)).append(" ");
         }
-        return cardNumber.toString();
+        return cardNumber.substring(0, cardNumber.length() - 1);
     }
 }
