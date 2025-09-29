@@ -2,15 +2,16 @@ package com.example.bankcards.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateCardResponse {
     @Schema(example = "1")
     private Long id;

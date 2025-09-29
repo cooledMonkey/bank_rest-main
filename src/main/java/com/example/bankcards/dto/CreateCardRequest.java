@@ -3,6 +3,7 @@ package com.example.bankcards.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Data
+@AllArgsConstructor
 public class CreateCardRequest {
     @Schema(example = "1")
     Long userId;

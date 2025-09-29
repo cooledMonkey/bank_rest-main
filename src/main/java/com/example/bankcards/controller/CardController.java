@@ -33,7 +33,7 @@ public class CardController {
     @PostMapping("/card/send-money")
     public void sendMoney(@RequestBody @Valid SendMoneyRequest sendMoneyRequest) {
         cardService.moneyTransfer(userService.getCurrentUser().getId(), sendMoneyRequest.getSenderCardId(),
-                sendMoneyRequest.getReceiverCardId(), sendMoneyRequest.getAmountOfMoney());
+                sendMoneyRequest.getReceiverCardId(), 50.0);//sendMoneyRequest.getAmountOfMoney()
     }
 
     @SecurityRequirement(name = "BearerAuth")
@@ -108,6 +108,5 @@ public class CardController {
     public ResponseEntity<CheckCardBalanceResponse> checkCardBalance(@PathVariable Long id){
         return ResponseEntity.ok(cardService.getCardBalance(id));
     }
-
 
 }

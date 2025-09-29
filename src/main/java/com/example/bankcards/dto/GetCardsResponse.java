@@ -1,22 +1,24 @@
 package com.example.bankcards.dto;
 
 import com.example.bankcards.entity.Card;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class GetCardsResponse {
     @Schema(example = "1")
     private Long id;
     @Schema(example = "**** **** **** 5406")
     private String cardNumber;
     @Schema(example = "2029-08-30T07:00:00.00")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime validityPeriod;
     @Schema(example = "active")
     private String status;
