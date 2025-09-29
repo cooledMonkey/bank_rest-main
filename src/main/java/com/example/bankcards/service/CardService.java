@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
@@ -119,6 +120,10 @@ public class CardService {
     public CheckCardBalanceResponse getCardBalance(Long id){
         Card card = findById(id);
         return new CheckCardBalanceResponse(card.getBalance());
+    }
+
+    public void setExpiredStatus(LocalDateTime now){
+        cardRepository.setExpiredStatus(now);
     }
 
     private Card findById(Long id){
