@@ -121,7 +121,7 @@ public class CardService {
         return new CheckCardBalanceResponse(card.getBalance());
     }
 
-    public Card findById(Long id){
+    private Card findById(Long id){
         Optional<Card> optionalCard = cardRepository.findById(id);
         if(optionalCard.isEmpty()){
             throw new CardNotFoundException();
