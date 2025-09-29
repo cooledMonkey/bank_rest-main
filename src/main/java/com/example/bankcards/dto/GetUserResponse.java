@@ -3,6 +3,7 @@ package com.example.bankcards.dto;
 import com.example.bankcards.entity.Role;
 import com.example.bankcards.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Data
+@AllArgsConstructor
 public class GetUserResponse {
     @Schema(example = "1")
     private Long id;
