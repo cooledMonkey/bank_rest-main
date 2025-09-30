@@ -2,7 +2,7 @@ package com.example.bankcards.controller;
 
 import com.example.bankcards.dto.*;
 import com.example.bankcards.security.AuthenticationService;
-import com.example.bankcards.security.UserService;
+import com.example.bankcards.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

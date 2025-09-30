@@ -1,5 +1,6 @@
 package com.example.bankcards.security;
 
+import com.example.bankcards.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

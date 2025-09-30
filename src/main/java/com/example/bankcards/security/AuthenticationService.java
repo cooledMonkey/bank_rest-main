@@ -4,6 +4,7 @@ import com.example.bankcards.dto.CreateUserRequest;
 import com.example.bankcards.dto.GetUserResponse;
 import com.example.bankcards.dto.JwtAuthenticationResponse;
 import com.example.bankcards.dto.LoginRequest;
+import com.example.bankcards.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,4 +1,4 @@
-package com.example.bankcards.security;
+package com.example.bankcards.service;
 
 import com.example.bankcards.dto.CreateUserRequest;
 import com.example.bankcards.dto.GetUserResponse;
@@ -31,11 +31,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> optionalUser = userRepository.findByPhoneNumber(username);
-        if (optionalUser.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
-        }
-        return optionalUser.get();
+        return getByPhoneNumber(username);
     }
 
     public GetUserResponse save(CreateUserRequest createUserRequest) {
@@ -63,7 +59,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll().stream().map(GetUserResponse::new).toList();
     }
 
-    public User getByPhoneNumber(String phoneNumber) {
+    private User getByPhoneNumber(String phoneNumber) {
         return userRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }

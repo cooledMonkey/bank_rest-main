@@ -1,5 +1,6 @@
 package com.example.bankcards.security;
 
+import com.example.bankcards.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

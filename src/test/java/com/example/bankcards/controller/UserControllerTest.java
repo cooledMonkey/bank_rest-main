@@ -3,7 +3,7 @@ package com.example.bankcards.controller;
 import com.example.bankcards.dto.*;
 import com.example.bankcards.exception.GlobalExceptionHandler;
 import com.example.bankcards.security.AuthenticationService;
-import com.example.bankcards.security.UserService;
+import com.example.bankcards.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
