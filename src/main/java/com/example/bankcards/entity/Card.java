@@ -3,7 +3,7 @@ package com.example.bankcards.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -20,7 +20,7 @@ public class Card {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User owner;
-    private LocalDateTime validityPeriod;
+    private LocalDate validityPeriod;
     private String status;
     private Double balance;
 }

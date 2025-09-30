@@ -117,4 +117,7 @@ databaseChangeLog:
       file: db/migration/changeset/create-admin.yml
   - include:
       file: db/migration/changeset/add-admin-roles.yml
+  - include:
+      file: db/migration/changeset/change-validity-period-datatype.yml
+
 

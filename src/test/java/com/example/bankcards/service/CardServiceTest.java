@@ -19,7 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 import java.util.Optional;
@@ -44,12 +44,12 @@ public class CardServiceTest {
         Long id = 1L;
         User user = new User(id, "Титовцев Антон Сергеевич",
                 "server123", "89879692771", "admin@server.com", Set.of());
-        Card savedCard = new Card(1L, "5406 5406 5406 5406", user,LocalDateTime.of(2029, Month.AUGUST,
-                30, 0, 0), "active", 100.0);
-        CreateCardRequest createCardRequest = new CreateCardRequest(1L, LocalDateTime.of(2029, Month.AUGUST,
-                30, 0, 0), 100.0);
-        CreateCardResponse createCardResponse = new CreateCardResponse(1L, "**** **** **** 5406", LocalDateTime.of(2029, Month.AUGUST,
-                30, 0, 0), "active", 100.0);
+        Card savedCard = new Card(1L, "5406 5406 5406 5406", user, LocalDate.of(2029, Month.AUGUST,
+                30), "active", 100.0);
+        CreateCardRequest createCardRequest = new CreateCardRequest(1L, LocalDate.of(2029, Month.AUGUST,
+                30), 100.0);
+        CreateCardResponse createCardResponse = new CreateCardResponse(1L, "**** **** **** 5406", LocalDate.of(2029, Month.AUGUST,
+                30), "active", 100.0);
         when(cardRepository.save(any(Card.class))).thenReturn(savedCard);
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         CreateCardResponse testCard = cardService.save(createCardRequest);
@@ -65,10 +65,10 @@ public class CardServiceTest {
         Long id = 1L;
         User user = new User(id, "Титовцев Антон Сергеевич",
                 "server123", "89879692771", "admin@server.com", Set.of());
-        Card savedCard = new Card(1L, "5406 5406 5406 5406", user,LocalDateTime.of(2029, Month.AUGUST,
-                30, 0, 0), "active", 100.0);
-        GetCardsResponse getCardsResponse = new GetCardsResponse(1L, "**** **** **** 5406", LocalDateTime.of(2029, Month.AUGUST,
-                30, 0, 0), "active", 100.0);
+        Card savedCard = new Card(1L, "5406 5406 5406 5406", user,LocalDate.of(2029, Month.AUGUST,
+                30), "active", 100.0);
+        GetCardsResponse getCardsResponse = new GetCardsResponse(1L, "**** **** **** 5406", LocalDate.of(2029, Month.AUGUST,
+                30), "active", 100.0);
         when(cardRepository.findById(id)).thenReturn(Optional.of(savedCard));
         assertEquals(getCardsResponse, cardService.getCardById(id));
         verify(cardRepository, times(1)).findById(id);
@@ -81,13 +81,13 @@ public class CardServiceTest {
                 "server123", "89879692771", "admin@server.com", Set.of());
         List<GetCardsResponse> content = List.of(
                 new GetCardsResponse(1L, "**** **** **** 5406",
-                        LocalDateTime.of(2029, Month.AUGUST, 30, 0, 0), "active", 100.0)
+                        LocalDate.of(2029, Month.AUGUST, 30), "active", 100.0)
         );
 
         Pageable pageable = PageRequest.of(0, 5);
         Page<GetCardsResponse> getCardResponsePage = new PageImpl<>(content, pageable, 1);
-        Card card = new Card(1L, "5406 5406 5406 5406", user,LocalDateTime.of(2029, Month.AUGUST,
-                30, 0, 0), "active", 100.0);
+        Card card = new Card(1L, "5406 5406 5406 5406", user,LocalDate.of(2029, Month.AUGUST,
+                30), "active", 100.0);
         Page<Card> cardPage = new PageImpl<>(List.of(card), pageable, 1);
 
         when(cardRepository.findAll(any(Specification.class), eq(PageRequest.of(0, 5))))
@@ -101,8 +101,8 @@ public class CardServiceTest {
         Long id = 1L;
         User user = new User(id, "Титовцев Антон Сергеевич",
                 "server123", "89879692771", "admin@server.com", Set.of());
-        Card savedCard = new Card(1L, "5406 5406 5406 5406", user,LocalDateTime.of(2029, Month.AUGUST,
-                30, 0, 0), "active", 100.0);
+        Card savedCard = new Card(1L, "5406 5406 5406 5406", user,LocalDate.of(2029, Month.AUGUST,
+                30), "active", 100.0);
         CheckCardBalanceResponse checkCardBalanceResponse = new CheckCardBalanceResponse(100.0);
         when(cardRepository.findById(id)).thenReturn(Optional.of(savedCard));
         assertEquals(checkCardBalanceResponse, cardService.getCardBalance(id));
@@ -114,10 +114,10 @@ public class CardServiceTest {
         Long receiverCardId = 2L;
         User user = new User(1L, "Титовцев Антон Сергеевич",
                 "server123", "89879692771", "admin@server.com", Set.of());
-        Card senderCard = new Card(1L, "5406 5406 5406 5406", user,LocalDateTime.of(2029, Month.AUGUST,
-                30, 0, 0), "active", 100.0);
-        Card receiverCard = new Card(2L, "5406 5406 5406 5544", user,LocalDateTime.of(2029, Month.AUGUST,
-                30, 0, 0), "active", 100.0);
+        Card senderCard = new Card(1L, "5406 5406 5406 5406", user,LocalDate.of(2029, Month.AUGUST,
+                30), "active", 100.0);
+        Card receiverCard = new Card(2L, "5406 5406 5406 5544", user,LocalDate.of(2029, Month.AUGUST,
+                30), "active", 100.0);
         when(cardRepository.findById(senderCardId)).thenReturn(Optional.of(senderCard));
         when(cardRepository.findById(receiverCardId)).thenReturn(Optional.of(receiverCard));
         cardService.moneyTransfer(1L,1L, 2L, 100.0);
@@ -132,8 +132,8 @@ public class CardServiceTest {
         Long id = 1L;
         User user = new User(1L, "Титовцев Антон Сергеевич",
                 "server123", "89879692771", "admin@server.com", Set.of());
-        Card card = new Card(1L, "5406 5406 5406 5406", user,LocalDateTime.of(2029, Month.AUGUST,
-                30, 0, 0), "active", 100.0);
+        Card card = new Card(1L, "5406 5406 5406 5406", user,LocalDate.of(2029, Month.AUGUST,
+                30), "active", 100.0);
         when(cardRepository.findById(id)).thenReturn(Optional.of(card));
         cardService.requestCardBlock(1L);
         verify(cardRepository, times(1)).findById(id);

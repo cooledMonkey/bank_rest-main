@@ -20,7 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 import java.util.Set;
@@ -53,13 +53,13 @@ public class CardControllerTest {
     public void testGetCardById() throws Exception {
         Long id = 1L;
         when(cardService.getCardById(id)).thenReturn(new GetCardsResponse(1L, "**** **** **** 5406",
-                LocalDateTime.of(2029, Month.AUGUST, 30, 0, 0), "active", 100.0));
+                LocalDate.of(2029, Month.AUGUST, 30), "active", 100.0));
         mockMvc.perform(get("/card/" + id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id").value("1"))
                 .andExpect(jsonPath("cardNumber").value("**** **** **** 5406"))
-                .andExpect(jsonPath("validityPeriod").value("2029-08-30T00:00"))
+                .andExpect(jsonPath("validityPeriod").value("2029-08-30"))
                 .andExpect(jsonPath("status").value("active"))
                 .andExpect(jsonPath("balance").value("100.0"));
         verify(cardService, times(1)).getCardById(id);
@@ -67,11 +67,10 @@ public class CardControllerTest {
 
     @Test
     public void testCreateNewCard() throws Exception {
-        Long id = 1L;
-        CreateCardRequest createCardRequest = new CreateCardRequest(1L, LocalDateTime.of(2029, Month.AUGUST,
-                30, 0, 0), 100.0);
+        CreateCardRequest createCardRequest = new CreateCardRequest(1L, LocalDate.of(2029, Month.AUGUST,
+                30), 100.0);
         when(cardService.save(createCardRequest)).thenReturn(new CreateCardResponse(1L, "**** **** **** 5406",
-                LocalDateTime.of(2029, Month.AUGUST, 30, 0, 0), "active", 100.0));
+                LocalDate.of(2029, Month.AUGUST, 30), "active", 100.0));
         mockMvc.perform(post("/admin/card/create-card")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createCardRequest)))
@@ -79,11 +78,7 @@ public class CardControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id").value("1"))
                 .andExpect(jsonPath("cardNumber").value("**** **** **** 5406"))
-                .andExpect(jsonPath("validityPeriod[0]").value("2029"))
-                .andExpect(jsonPath("validityPeriod[1]").value("8"))
-                .andExpect(jsonPath("validityPeriod[2]").value("30"))
-                .andExpect(jsonPath("validityPeriod[3]").value("0"))
-                .andExpect(jsonPath("validityPeriod[4]").value("0"))
+                .andExpect(jsonPath("validityPeriod").value("2029-08-30"))
                 .andExpect(jsonPath("status").value("active"))
                 .andExpect(jsonPath("balance").value("100.0"));
         verify(cardService, times(1)).save(createCardRequest);
@@ -108,7 +103,7 @@ public class CardControllerTest {
 
         List<GetCardsResponse> content = List.of(
                 new GetCardsResponse(1L, "**** **** **** 5406",
-                        LocalDateTime.of(2029, Month.AUGUST, 30, 0, 0), "active", 100.0)
+                        LocalDate.of(2029, Month.AUGUST, 30), "active", 100.0)
         );
 
         Pageable pageable = PageRequest.of(0, 5);
@@ -125,7 +120,7 @@ public class CardControllerTest {
                 .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("content[0].id").value("1"))
                 .andExpect(jsonPath("content[0].cardNumber").value("**** **** **** 5406"))
-                .andExpect(jsonPath("content[0].validityPeriod").value("2029-08-30T00:00"))
+                .andExpect(jsonPath("content[0].validityPeriod").value("2029-08-30"))
                 .andExpect(jsonPath("content[0].status").value("active"))
                 .andExpect(jsonPath("content[0].balance").value("100.0"));
         verify(cardService, times(1)).getCardsByOwner(id, 0, 5, "active");
@@ -135,7 +130,7 @@ public class CardControllerTest {
     void testGetAllCards() throws Exception {
         List<GetCardsResponse> content = List.of(
                 new GetCardsResponse(1L, "**** **** **** 5406",
-                        LocalDateTime.of(2029, Month.AUGUST, 30, 0, 0), "active", 100.0)
+                        LocalDate.of(2029, Month.AUGUST, 30), "active", 100.0)
         );
 
         Pageable pageable = PageRequest.of(0, 5);
@@ -151,7 +146,7 @@ public class CardControllerTest {
                 .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("content[0].id").value("1"))
                 .andExpect(jsonPath("content[0].cardNumber").value("**** **** **** 5406"))
-                .andExpect(jsonPath("content[0].validityPeriod").value("2029-08-30T00:00"))
+                .andExpect(jsonPath("content[0].validityPeriod").value("2029-08-30"))
                 .andExpect(jsonPath("content[0].status").value("active"))
                 .andExpect(jsonPath("content[0].balance").value("100.0"));
         verify(cardService, times(1)).getAllCards(0, 5, "active");

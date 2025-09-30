@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: change-validity-period-datatype
+      author: cooled_monkey
+      changes:
+        - modifyDataType:
+            tableName: cards
+            columnName: validity_period
+            newDataType: DATE
+
+
+
