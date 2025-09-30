@@ -8,6 +8,7 @@ import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.repository.UserRepository;
+import com.example.bankcards.service.impl.CardServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,7 +32,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith({MockitoExtension.class})
 public class CardServiceTest {
     @InjectMocks
-    private CardService cardService;
+    private CardServiceImpl cardService;
 
     @Mock
     private CardRepository cardRepository;
