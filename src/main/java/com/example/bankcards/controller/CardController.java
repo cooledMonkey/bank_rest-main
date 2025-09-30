@@ -93,7 +93,7 @@ public class CardController {
     @SecurityRequirement(name = "BearerAuth")
     @Operation(summary = "Заблокировать карту")
     @ApiResponse(responseCode = "200")
-    @PatchMapping("/card/block-card/{id}")
+    @PatchMapping("/admin/card/block-card/{id}")
     public void blockCard(@PathVariable Long id){
         cardService.requestCardBlock(id);
     }
@@ -107,6 +107,25 @@ public class CardController {
     @GetMapping("/card/get-card-balance/{id}")
     public ResponseEntity<CheckCardBalanceResponse> checkCardBalance(@PathVariable Long id){
         return ResponseEntity.ok(cardService.getCardBalance(id));
+    }
+
+    @PostMapping("/card/send-block-request/{id}")
+    public void sendBlockRequest(@PathVariable Long id){
+        cardService.sendBlockRequest(id);
+    }
+
+    @GetMapping("/admin/card/block-requests")
+    public ResponseEntity<Page<GetBlockRequestResponse>> getBlockRequests(
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "limit") Integer limit,
+            @RequestParam(value = "status", required = false)String status){
+        return ResponseEntity.ok(cardService.findBlockRequests(status, page, limit));
+    }
+
+    @PostMapping("/admin/card/change-block-request-status")
+    public ResponseEntity<GetBlockRequestResponse> changeBlockRequestStatus(@RequestParam(value = "id") Long id,
+                                         @RequestParam(value = "status") String status){
+        return ResponseEntity.ok(cardService.changeBlockRequestStatus(id, status));
     }
 
 }

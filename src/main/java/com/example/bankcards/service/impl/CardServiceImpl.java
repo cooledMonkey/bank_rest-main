@@ -1,18 +1,15 @@
 package com.example.bankcards.service.impl;
 
-import com.example.bankcards.dto.CheckCardBalanceResponse;
-import com.example.bankcards.dto.CreateCardRequest;
-import com.example.bankcards.dto.CreateCardResponse;
-import com.example.bankcards.dto.GetCardsResponse;
+import com.example.bankcards.dto.*;
+import com.example.bankcards.entity.BlockRequest;
 import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.User;
-import com.example.bankcards.exception.AccessDeniedToCardException;
-import com.example.bankcards.exception.CardNotFoundException;
-import com.example.bankcards.exception.OperationUnavailableException;
-import com.example.bankcards.exception.UserNotFoundException;
+import com.example.bankcards.exception.*;
+import com.example.bankcards.repository.BlockRequestRepository;
 import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.service.CardService;
+import com.example.bankcards.util.BlockRequestSpecification;
 import com.example.bankcards.util.CardSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +31,8 @@ public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     @Autowired
     private final UserRepository userRepository;
+    @Autowired
+    private final BlockRequestRepository blockRequestRepository;
 
     @Override
     public CreateCardResponse save(CreateCardRequest newCardRequest) {
@@ -74,8 +73,8 @@ public class CardServiceImpl implements CardService {
                 !Objects.equals(userId, receiverCard.getOwner().getId())) {
             throw new AccessDeniedToCardException();
         }
-        if(!senderCard.getStatus().equals("active")||
-                !receiverCard.getStatus().equals("active")){
+        if (!senderCard.getStatus().equals("active") ||
+                !receiverCard.getStatus().equals("active")) {
             throw new OperationUnavailableException();
         }
         senderCard.setBalance(senderCard.getBalance() - amountOfMoney);
@@ -90,7 +89,7 @@ public class CardServiceImpl implements CardService {
         Specification<Card> cardSpecificationByUserId = Specification.where(CardSpecification.hasUserId(id));
         Specification<Card> cardSpecificationByStatusAndUserId =
                 Specification.where(CardSpecification.hasStatus(status)).and(cardSpecificationByUserId);
-        if(status != null){
+        if (status != null) {
             Page<Card> cards = cardRepository.findAll(cardSpecificationByStatusAndUserId, PageRequest.of(page, limit));
             return new PageImpl<>(cards.stream().map(GetCardsResponse::new).toList());
         }
@@ -100,9 +99,9 @@ public class CardServiceImpl implements CardService {
 
     @Override
     @SuppressWarnings("removal")
-    public Page<GetCardsResponse> getAllCards(Integer page, Integer limit, String status){
+    public Page<GetCardsResponse> getAllCards(Integer page, Integer limit, String status) {
         Specification<Card> cardSpecificationByStatus = Specification.where(CardSpecification.hasStatus(status));
-        if(status != null){
+        if (status != null) {
             Page<Card> cards = cardRepository.findAll(cardSpecificationByStatus, PageRequest.of(page, limit));
             return new PageImpl<>(cards.stream().map(GetCardsResponse::new).toList());
         }
@@ -116,9 +115,9 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public void requestCardBlock(Long id){
+    public void requestCardBlock(Long id) {
         Card card = findById(id);
-        if(card.getStatus().equals("expired")){
+        if (card.getStatus().equals("expired")) {
             throw new OperationUnavailableException();
         }
         card.setStatus("locked");
@@ -126,19 +125,58 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public CheckCardBalanceResponse getCardBalance(Long id){
+    public CheckCardBalanceResponse getCardBalance(Long id) {
         Card card = findById(id);
         return new CheckCardBalanceResponse(card.getBalance());
     }
 
     @Override
-    public void setExpiredStatus(LocalDateTime now){
+    public void setExpiredStatus(LocalDateTime now) {
         cardRepository.setExpiredStatus(now);
     }
 
-    private Card findById(Long id){
+    @Override
+    public void sendBlockRequest(Long cardId) {
+        BlockRequest blockRequest = new BlockRequest();
+        blockRequest.setCard(findById(cardId));
+        blockRequest.setStatus("accepted");
+        blockRequestRepository.save(blockRequest);
+    }
+
+    @Override
+    public GetBlockRequestResponse changeBlockRequestStatus(Long id, String status) {
+        Optional<BlockRequest> optionalBlockRequest = blockRequestRepository.findById(id);
+        if(optionalBlockRequest.isEmpty()){
+            throw new BlockRequestNotFoundException();
+        }
+        if(status.equals("approved")){
+            optionalBlockRequest.get().setStatus(status);
+            requestCardBlock(id);
+            return new GetBlockRequestResponse(blockRequestRepository.save(optionalBlockRequest.get()));
+        }
+        else {
+            throw new OperationUnavailableException();
+        }
+    }
+
+    @SuppressWarnings("removal")
+    @Override
+    public Page<GetBlockRequestResponse> findBlockRequests(String status, Integer page, Integer limit) {
+        if (status != null) {
+            Specification<BlockRequest> blockRequestSpecificationByStatus =
+                    Specification.where(BlockRequestSpecification.hasStatus(status));
+            Page<BlockRequest> blockRequests = blockRequestRepository.findAll(blockRequestSpecificationByStatus,
+                    PageRequest.of(page, limit));
+            return new PageImpl<>(blockRequests.stream().map(GetBlockRequestResponse::new).toList());
+        }
+        Page<BlockRequest> blockRequests = blockRequestRepository.findAll(PageRequest.of(page, limit));
+        return new PageImpl<>(blockRequests.stream().map(GetBlockRequestResponse::new).toList());
+    }
+
+
+    private Card findById(Long id) {
         Optional<Card> optionalCard = cardRepository.findById(id);
-        if(optionalCard.isEmpty()){
+        if (optionalCard.isEmpty()) {
             throw new CardNotFoundException();
         }
         return optionalCard.get();

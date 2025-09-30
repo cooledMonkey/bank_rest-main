@@ -52,4 +52,9 @@ public class GlobalExceptionHandler {
         });
         return errors;
     }
+    @ExceptionHandler(BlockRequestNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleException(BlockRequestNotFoundException e) {
+        ExceptionResponse response = new ExceptionResponse("Запрос на блокировку не найден");
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 }

@@ -1,9 +1,6 @@
 package com.example.bankcards.service;
 
-import com.example.bankcards.dto.CheckCardBalanceResponse;
-import com.example.bankcards.dto.CreateCardRequest;
-import com.example.bankcards.dto.CreateCardResponse;
-import com.example.bankcards.dto.GetCardsResponse;
+import com.example.bankcards.dto.*;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
@@ -25,4 +22,10 @@ public interface CardService {
     CheckCardBalanceResponse getCardBalance(Long id);
 
     void setExpiredStatus(LocalDateTime now);
+
+    void sendBlockRequest(Long cardId);
+
+    Page<GetBlockRequestResponse> findBlockRequests(String status, Integer page, Integer limit);
+
+    GetBlockRequestResponse changeBlockRequestStatus(Long id, String status);
 }
