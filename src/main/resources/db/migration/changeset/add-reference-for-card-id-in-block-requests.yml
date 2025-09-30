@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-reference-for-card-id-in-block-requests
+      author: cooled_monkey
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: block_requests
+            baseColumnNames: card_id
+            constraintName: fk_block_requests_cards_card_id
+            referencedTableName: cards
+            referencedColumnNames: id

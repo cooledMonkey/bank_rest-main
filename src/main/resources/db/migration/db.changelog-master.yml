@@ -121,4 +121,6 @@ databaseChangeLog:
       file: db/migration/changeset/change-validity-period-datatype.yml
   - include:
       file: db/migration/changeset/add-block-requests-table.yml
+  - include:
+      file: db/migration/changeset/add-reference-for-card-id-in-block-requests.yml
 
