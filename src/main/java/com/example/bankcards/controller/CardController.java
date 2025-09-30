@@ -33,7 +33,7 @@ public class CardController {
     @PostMapping("/card/send-money")
     public void sendMoney(@RequestBody @Valid SendMoneyRequest sendMoneyRequest) {
         cardService.moneyTransfer(userService.getCurrentUser().getId(), sendMoneyRequest.getSenderCardId(),
-                sendMoneyRequest.getReceiverCardId(), 50.0);//sendMoneyRequest.getAmountOfMoney()
+                sendMoneyRequest.getReceiverCardId(), sendMoneyRequest.getAmountOfMoney());
     }
 
     @SecurityRequirement(name = "BearerAuth")

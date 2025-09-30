@@ -1,6 +1,7 @@
 package com.example.bankcards.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -22,5 +23,6 @@ public class CreateCardRequest {
     LocalDate validityPeriod;
     @Schema(example = "100")
     @Min(value = 0, message = "Баланс карты не должен быть отрицательным")
+    @Digits(integer = 20, fraction = 2)
     Double balance;
 }
